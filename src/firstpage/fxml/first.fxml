@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="400.0" styleClass="backGround" stylesheets="@../first.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="firstpage.con.Controller">
+   <children>
+      <AnchorPane id="firstPage" fx:id="firstPage" prefHeight="640.0" prefWidth="400.0" stylesheets="@../first.css">
+         <children>
+            <VBox alignment="CENTER_LEFT" layoutX="71.0" layoutY="398.0" prefHeight="138.0" prefWidth="259.0">
+               <children>
+                  <TextField fx:id="txtId" prefHeight="43.0" prefWidth="213.0" promptText="ID">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <PasswordField fx:id="txtPw" prefHeight="43.0" prefWidth="213.0" promptText="PassWord" />
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" layoutX="86.0" layoutY="526.0" prefHeight="100.0" prefWidth="213.0">
+               <children>
+                  <Button fx:id="btnLogIn" mnemonicParsing="false" onAction="#imsiLoginBtnAction" prefHeight="35.0" prefWidth="68.0" text="LogIn">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnSignUp" mnemonicParsing="false" onAction="#singUpBtnAction" prefHeight="35.0" prefWidth="68.0" text="Sign Up">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="signUpPage" prefHeight="640.0" prefWidth="400.0" stylesheets="@../first.css" visible="false">
+         <children>
+            <HBox layoutX="14.0" layoutY="93.0" prefHeight="217.0" prefWidth="317.0">
+               <children>
+                  <VBox id="signUpLabel" fx:id="signUpLabel" prefHeight="359.0" prefWidth="113.0" styleClass="label">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="100.0" styleClass="sLabel" text="아이디 : ">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="100.0" styleClass="sLabel" text="비밀번호:">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="100.0" styleClass="sLabel" text="비밀번호 재확인:">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="100.0" styleClass="sLabel" text="이메일:">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="254.0" prefWidth="214.0">
+                     <children>
+                        <TextField fx:id="signupId">
+                           <VBox.margin>
+                              <Insets bottom="12.0" top="6.0" />
+                           </VBox.margin>
+                        </TextField>
+                        <PasswordField fx:id="signupPw">
+                           <VBox.margin>
+                              <Insets bottom="12.0" top="6.0" />
+                           </VBox.margin>
+                        </PasswordField>
+                        <PasswordField fx:id="signupPwCheck" onAction="#txtCheckPw">
+                           <VBox.margin>
+                              <Insets bottom="12.0" top="6.0" />
+                           </VBox.margin>
+                        </PasswordField>
+                        <TextField fx:id="signupEmail" promptText="abc@naver.com">
+                           <VBox.margin>
+                              <Insets top="6.0" />
+                           </VBox.margin>
+                        </TextField>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="100.0" layoutY="473.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#imsiJoinBtnAction" prefHeight="44.0" prefWidth="75.0" text="계정생성">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <ImageView fitHeight="109.0" fitWidth="123.0" layoutX="146.0" layoutY="347.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/hand.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <AnchorPane id="noId" fx:id="noId" layoutX="100.0" layoutY="234.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+         <children>
+            <Text layoutX="9.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="존재하지 않는 아이디 입니다" wrappingWidth="181.21875">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Text>
+            <Button fx:id="btnNoIdOk" layoutX="78.0" layoutY="121.0" mnemonicParsing="false" onAction="#btnNoIdOk" text="확인" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="noPw" fx:id="noPw" layoutX="100.0" layoutY="243.0" opacity="0.9" prefHeight="172.0" prefWidth="191.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+         <children>
+            <Text layoutX="22.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="잘못된 비밀번호 입니다" wrappingWidth="155.21875">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Text>
+            <Button fx:id="btnNoPwOk" layoutX="67.0" layoutY="122.0" mnemonicParsing="false" onAction="#btnNoPwOk" text="확인" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
