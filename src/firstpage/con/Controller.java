@@ -65,7 +65,7 @@ public class Controller implements Initializable {
         String id = txtId.getText();
         String pw = txtPw.getText();
         try {
-            bw.write("login"+"@"+id+":"+pw+"\n");
+            bw.write("1"+"@"+id+":"+pw+"\n");
             bw.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -87,28 +87,6 @@ public class Controller implements Initializable {
                 stage.show();
             } catch (Exception e){}
         }
-
-       /* for (int i = 0; i < users.size(); i++) {
-            if (txtId.getText().equals(users.get(i).getId())) {
-                if (txtPw.getText().equals(users.get(i).getPw())) {
-                    try{
-                        Stage stage = (Stage)btnLogIn.getScene().getWindow();
-                        Parent root = FXMLLoader.load(getClass().getResource("../fxml/myPage.fxml"));
-                        Scene scene = new Scene(root);
-                        stage.setScene(scene);
-                        stage.setTitle("Jaden's talk");
-                        stage.show();
-                    } catch (Exception e){}
-                } else {
-                    txtPw.setText("");
-                    noPw.setVisible(true);
-                    firstPage.setVisible(false);
-                }
-            } else {
-                noId.setVisible(true);
-                firstPage.setVisible(false);
-            }
-        }*/
     }
 
     @FXML
@@ -137,7 +115,7 @@ public class Controller implements Initializable {
         String id = signupId.getText();
         String pw = signupPw.getText();
         String email = signupEmail.getText();
-        String data = "join"+"@"+ id + ":" + pw + ":"+ email;
+        String data = "2"+"@"+ id + ":" + pw + ":"+ email;
         try {
             bw.write(data+"\n");
             bw.flush();

@@ -22,7 +22,6 @@ public class MyPageCon implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadData();
-
     }
 
     public void loadData(){
