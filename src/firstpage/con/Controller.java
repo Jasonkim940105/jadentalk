@@ -62,8 +62,33 @@ public class Controller implements Initializable {
 
     @FXML
     public void imsiLoginBtnAction(ActionEvent event) {
-        System.out.println(DB.getUsers());
-        for (int i = 0; i < users.size(); i++) {
+        String id = txtId.getText();
+        String pw = txtPw.getText();
+        try {
+            bw.write("login"+"@"+id+":"+pw+"\n");
+            bw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String check = "no";
+        try {
+            check = br.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(check);
+        if(check.equals("okay")){
+            try{
+                Stage stage = (Stage)btnLogIn.getScene().getWindow();
+                Parent root = FXMLLoader.load(getClass().getResource("../fxml/myPage.fxml"));
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Jaden's talk");
+                stage.show();
+            } catch (Exception e){}
+        }
+
+       /* for (int i = 0; i < users.size(); i++) {
             if (txtId.getText().equals(users.get(i).getId())) {
                 if (txtPw.getText().equals(users.get(i).getPw())) {
                     try{
@@ -83,7 +108,7 @@ public class Controller implements Initializable {
                 noId.setVisible(true);
                 firstPage.setVisible(false);
             }
-        }
+        }*/
     }
 
     @FXML
@@ -112,7 +137,7 @@ public class Controller implements Initializable {
         String id = signupId.getText();
         String pw = signupPw.getText();
         String email = signupEmail.getText();
-        String data = id + ":" + pw + ":"+ email;
+        String data = "join"+"@"+ id + ":" + pw + ":"+ email;
         try {
             bw.write(data+"\n");
             bw.flush();

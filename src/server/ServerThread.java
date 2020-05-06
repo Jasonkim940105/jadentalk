@@ -17,21 +17,50 @@ public class ServerThread extends Thread{
 
     @Override
     public void run() {
-        try{
-            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            while (true){
-                String joinData = br.readLine();
-                String arr[] = joinData.split(":");
-                User user = new User(arr[0],arr[1],arr[2]);
-                DB.addUser(user);
-                System.out.println("완료");
+        while (true){
+            try{
+                br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                while (true){
+                    String fromClient = br.readLine();
+                    String str[] = fromClient.split("@");
+                    if(str[0].equals("login")){
+                        String loginData = str[1];
+                        String arr[] = loginData.split(":");
+                        // arr[0] = id , arr[1] = pw
+                        if(DB.getUsers().size() != 0){
+                            for(int i = 0 ; i < DB.getUsers().size(); i++){
+                                if(arr[0].equals(DB.getUsers().get(i).getId())){
+                                    if(arr[1].equals(DB.getUsers().get(i).getPw())){
+                                        bw.write("okay"+"\n");
+                                        bw.flush();
+                                        System.out.println("okay flushed");
+                                    }
+                                } else{
+                                    bw.write("no"+"\n");
+                                    bw.flush();
+                                    System.out.println("no flushed");
+                                }
+                            }
+                        } else {
+                            bw.write("no"+"\n");
+                            bw.flush();
+                            System.out.println("no flushed");
+                        }
+                    } else if(str[0].equals("join")){
+                        String joinData = br.readLine();
+                        String arr[] = joinData.split(":");
+                        User user = new User(arr[0],arr[1],arr[2]);
+                        DB.addUser(user);
+                        System.out.println("완료");
+                    }
+                }
+
+
+
+            } catch (IOException ioe){
+                System.out.println(ioe.getMessage());
             }
-
-
-
-        } catch (IOException ioe){
-            System.out.println(ioe.getMessage());
         }
 
     }
