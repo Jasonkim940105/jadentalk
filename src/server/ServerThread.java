@@ -48,7 +48,8 @@ public class ServerThread extends Thread{
                             System.out.println("no flushed");
                         }
                     } else if(str[0].equals("join")){
-                        String joinData = br.readLine();
+                        String joinData = str[1];
+                        System.out.println(joinData);
                         String arr[] = joinData.split(":");
                         User user = new User(arr[0],arr[1],arr[2]);
                         DB.addUser(user);

@@ -141,6 +141,7 @@ public class Controller implements Initializable {
         try {
             bw.write(data+"\n");
             bw.flush();
+            System.out.println(data + " is flsuched");
         } catch (IOException e) {
             e.printStackTrace();
         }
