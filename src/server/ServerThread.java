@@ -21,8 +21,7 @@ public class ServerThread extends Thread{
     public void run() {
         while (true){
             try{
-                String[]str = getData();
-                btnCase(str);
+                btnCase(getData());
             } catch (IOException ioe){
                 System.out.println(ioe.getMessage());
             }
@@ -37,36 +36,28 @@ public class ServerThread extends Thread{
     }
 
     private void btnCase(String[] str) throws IOException {
+        String data = str[1];  //필요한 데이터
         switch (Integer.parseInt(str[0])) {
-
-            case 1:
-                String loginData = str[1];
-                String arr[] = loginData.split(":");
+            case 1 : // 로그인 버튼
+                String arr[] = data.split(":");
                 // arr[0] = id , arr[1] = pw
                 if (DB.getUsers().size() != 0) {
                     for (int i = 0; i < DB.getUsers().size(); i++) {
                         if (arr[0].equals(DB.getUsers().get(i).getId())) {
                             if (arr[1].equals(DB.getUsers().get(i).getPw())) {
-                                bw.write("okay" + "\n");
-                                bw.flush();
-                                System.out.println("okay flushed");
+                                loginOk();
                             }
                         } else {
-                            bw.write("no" + "\n");
-                            bw.flush();
-                            System.out.println("no flushed");
+                            loginNo();
                         }
                     }
                 } else {
-                    bw.write("no" + "\n");
-                    bw.flush();
-                    System.out.println("no flushed");
+                    loginNo();
                 }
                 break;
-            case 2:
-                String joinData = str[1];
-                System.out.println(joinData);
-                String brr[] = joinData.split(":");
+
+            case 2: // 조인 버튼
+                String brr[] = data.split(":");
                 User user = new User(brr[0], brr[1], brr[2]);
                 DB.addUser(user);
                 System.out.println("완료");
@@ -74,7 +65,19 @@ public class ServerThread extends Thread{
         }
     }
 
+
+    private void loginOk() throws IOException{
+        bw.write("okay" + "\n");
+        bw.flush();
     }
+
+    private void loginNo() throws IOException{
+        bw.write("no" + "\n");
+        bw.flush();
+    }
+
+
+} // class
 
 
 
