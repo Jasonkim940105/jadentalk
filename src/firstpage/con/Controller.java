@@ -76,7 +76,6 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(check);
         if(check.equals("okay")){
             try{
                 Stage stage = (Stage)btnLogIn.getScene().getWindow();
@@ -86,6 +85,9 @@ public class Controller implements Initializable {
                 stage.setTitle("Jaden's talk");
                 stage.show();
             } catch (Exception e){}
+        } else {
+            txtId.setText("");
+            txtPw.setText("");
         }
     }
 
@@ -94,6 +96,7 @@ public class Controller implements Initializable {
         noId.setVisible(false);
         firstPage.setVisible(true);
     }
+
     @FXML
     public void btnNoPwOk(ActionEvent event){
         noPw.setVisible(false);
@@ -109,9 +112,20 @@ public class Controller implements Initializable {
 
         }
     }
+    @FXML
+    public void btnLoginBack(ActionEvent event){
+        signupId.setText("");
+        signupPw.setText("");
+        signupPwCheck.setText("");
+        signupEmail.setText("");
+        signUpPage.setVisible(false);
+        firstPage.setVisible(true);
+    }
 
     @FXML
     public void imsiJoinBtnAction(ActionEvent event){
+        txtId.setText("");
+        txtPw.setText("");
         String id = signupId.getText();
         String pw = signupPw.getText();
         String email = signupEmail.getText();
@@ -119,12 +133,9 @@ public class Controller implements Initializable {
         try {
             bw.write(data+"\n");
             bw.flush();
-            System.out.println(data + " is flsuched");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*User user = new User(signupId.getText(), signupPw.getText(), signupEmail.getText());
-        DB.addUser(user);*/
         signUpPage.setVisible(false);
         firstPage.setVisible(true);
     }
