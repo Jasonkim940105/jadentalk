@@ -1,7 +1,5 @@
 package firstpage.con;
 
-import firstpage.DB;
-import firstpage.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,22 +15,19 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     //멤버
     @FXML
-    private Button btnLogIn, btnMakeAccount, btnImpossibleID;
+    private Button btnLogIn, btnMakeAccount, btnsignUpFormErr;
 
     @FXML
     private TextField txtId, signupId, signupEmail;
     @FXML
     private PasswordField txtPw ,signupPw, signupPwCheck;
     @FXML
-    private AnchorPane firstPage, signUpPage, noId, noPw, impossibleId;
-
-    private ArrayList<User> users;
+    private AnchorPane firstPage, signUpPage, noId, noPw, impossibleId, signUpFormErr;
 
     private Socket socket = null;
 
@@ -63,7 +58,19 @@ public class Controller implements Initializable {
     @FXML
     public void imsiLoginBtnAction(ActionEvent event) {
         String id = txtId.getText();
+        //id가 입력안됐을경우
+        id = id.trim();
+        if(id.length()==0){
+            noId.setVisible(true);
+            return;
+        }
         String pw = txtPw.getText();
+        //pw가 입력안됐을경우
+        pw = pw.trim();
+        if(pw.length()==0){
+            noPw.setVisible(true);
+            return;
+        }
         try {
             bw.write("1"+"@"+id+":"+pw+"\n");
             bw.flush();
@@ -113,7 +120,7 @@ public class Controller implements Initializable {
         }
     }
     @FXML
-    public void btnLoginBack(ActionEvent event){
+    public void btnLoginBack(ActionEvent event){ //회원가입 페이지 뒤로가기
         signupId.setText("");
         signupPw.setText("");
         signupPwCheck.setText("");
@@ -155,12 +162,39 @@ public class Controller implements Initializable {
     }
 
     @FXML
+    public void btnsignUpFormErr(ActionEvent event){
+        signUpFormErr.setVisible(false);
+    }
+
+    @FXML
     public void imsiJoinBtnAction(ActionEvent event){
         txtId.setText("");
         txtPw.setText("");
         String id = signupId.getText();
+        id = id.trim();
+        // 아이디 입력크기 조절
+        if(id.length() > 10 ){
+            signUpFormErr.setVisible(true);
+            signupId.setText("");
+            return;
+        }
         String pw = signupPw.getText();
+        pw = pw.trim();
+        if(pw.length() > 10){
+            signUpFormErr.setVisible(true);
+            signupPw.setText("");
+            signupPwCheck.setText("");
+            return;
+        }
+        // 비밀번호 입력크기 조절
         String email = signupEmail.getText();
+        email = email.trim();
+        if(!email.contains("@")){
+            signUpFormErr.setVisible(true);
+            signupEmail.setText("");
+            return;
+        }
+        // 이메일 형식 확인
         String data = "2"+"@"+ id + ":" + pw + ":"+ email;
         try {
             bw.write(data+"\n");
@@ -168,6 +202,10 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        signupId.setText("");
+        signupPw.setText("");
+        signupPwCheck.setText("");
+        signupEmail.setText("");
         signUpPage.setVisible(false);
         firstPage.setVisible(true);
     }

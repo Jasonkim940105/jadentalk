@@ -151,5 +151,15 @@
             <Button fx:id="btnImpossibleID" layoutX="78.0" layoutY="121.0" mnemonicParsing="false" onAction="#btnImpossibleID" text="확인" />
          </children>
       </AnchorPane>
+      <AnchorPane id="signUpFormErr" fx:id="signUpFormErr" layoutX="120.0" layoutY="254.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+         <children>
+            <Text layoutX="9.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="잘못된 양식입니다. (아이디, 비밀번호 10글자 이내/ 이메일 형식사용) " wrappingWidth="181.21874928474426">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Text>
+            <Button fx:id="btnsignUpFormErr" layoutX="78.0" layoutY="121.0" mnemonicParsing="false" onAction="#btnsignUpFormErr" text="확인" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

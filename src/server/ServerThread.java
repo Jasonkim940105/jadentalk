@@ -1,12 +1,8 @@
 package server;
 
-import firstpage.DB;
-import firstpage.User;
-
 import java.io.*;
 import java.net.Socket;
 import java.sql.*;
-import java.util.ArrayList;
 
 public class ServerThread extends Thread {
     Socket socket;
