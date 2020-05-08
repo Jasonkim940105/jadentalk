@@ -48,7 +48,7 @@
       </AnchorPane>
       <AnchorPane fx:id="signUpPage" prefHeight="640.0" prefWidth="400.0" stylesheets="@../first.css" visible="false">
          <children>
-            <HBox layoutX="14.0" layoutY="93.0" prefHeight="217.0" prefWidth="317.0">
+            <HBox layoutY="99.0" prefHeight="217.0" prefWidth="317.0">
                <children>
                   <VBox id="signUpLabel" fx:id="signUpLabel" prefHeight="359.0" prefWidth="113.0" styleClass="label">
                      <children>
@@ -74,7 +74,7 @@
                         </Label>
                      </children>
                   </VBox>
-                  <VBox prefHeight="254.0" prefWidth="214.0">
+                  <VBox alignment="TOP_CENTER" prefHeight="254.0" prefWidth="214.0">
                      <children>
                         <TextField fx:id="signupId">
                            <VBox.margin>
@@ -95,6 +95,9 @@
                            <VBox.margin>
                               <Insets top="6.0" />
                            </VBox.margin>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
                         </TextField>
                      </children>
                   </VBox>
@@ -102,7 +105,7 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="107.0" layoutY="474.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#imsiJoinBtnAction" prefHeight="44.0" prefWidth="75.0" text="계정생성">
+                  <Button fx:id="btnMakeAccount" disable="true" mnemonicParsing="false" onAction="#imsiJoinBtnAction" prefHeight="44.0" prefWidth="75.0" text="계정생성">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
@@ -115,6 +118,7 @@
                   <Image url="@../img/hand.png" />
                </image>
             </ImageView>
+            <Button fx:id="idCheck" layoutX="327.0" layoutY="106.0" mnemonicParsing="false" onAction="#idCheck" text="중복확인" />
          </children>
       </AnchorPane>
       <AnchorPane id="noId" fx:id="noId" layoutX="100.0" layoutY="234.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
@@ -135,6 +139,16 @@
                </font>
             </Text>
             <Button fx:id="btnNoPwOk" layoutX="67.0" layoutY="122.0" mnemonicParsing="false" onAction="#btnNoPwOk" text="확인" />
+         </children>
+      </AnchorPane>
+      <AnchorPane id="impossibleID" fx:id="impossibleId" layoutX="110.0" layoutY="244.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+         <children>
+            <Text layoutX="9.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="사용할 수 없는 아이디" wrappingWidth="181.21875">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Text>
+            <Button fx:id="btnImpossibleID" layoutX="78.0" layoutY="121.0" mnemonicParsing="false" onAction="#btnImpossibleID" text="확인" />
          </children>
       </AnchorPane>
    </children>

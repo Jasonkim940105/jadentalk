@@ -23,14 +23,14 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
     //멤버
     @FXML
-    private Button btnLogIn;
+    private Button btnLogIn, btnMakeAccount, btnImpossibleID;
 
     @FXML
     private TextField txtId, signupId, signupEmail;
     @FXML
     private PasswordField txtPw ,signupPw, signupPwCheck;
     @FXML
-    private AnchorPane firstPage, signUpPage, noId, noPw;
+    private AnchorPane firstPage, signUpPage, noId, noPw, impossibleId;
 
     private ArrayList<User> users;
 
@@ -120,6 +120,38 @@ public class Controller implements Initializable {
         signupEmail.setText("");
         signUpPage.setVisible(false);
         firstPage.setVisible(true);
+    }
+
+    @FXML
+    public void idCheck(ActionEvent event){
+        String id = signupId.getText();
+        String pw = signupPw.getText();
+        String data = "3@"+id;
+        try{
+            bw.write(data+"\n");
+            bw.flush();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        String check = "idNotPossible";
+        try{
+            check = br.readLine();
+        } catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+        if(check.equals("idPossible")){
+            btnMakeAccount.setDisable(false);
+
+        } else{
+            btnMakeAccount.setDisable(true);
+            impossibleId.setVisible(true);
+        }
+
+    }
+    @FXML
+    public void btnImpossibleID(ActionEvent event){
+        impossibleId.setVisible(false);
     }
 
     @FXML

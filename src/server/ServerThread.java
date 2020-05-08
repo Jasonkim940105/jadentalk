@@ -14,7 +14,6 @@ public class ServerThread extends Thread {
     BufferedReader br;
     Connection conn = null;
     PreparedStatement pstmt = null;
-    Statement stmt = null;
     ResultSet rs = null;
 
 
@@ -22,19 +21,7 @@ public class ServerThread extends Thread {
         this.socket = socket;
         br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        try {
-            Class.forName("oracle.jdbc.OracleDriver");
-        } catch (ClassNotFoundException cnfe) {
-            cnfe.printStackTrace();
-            System.err.println("드라이버 검색 실패");
-        }
-        try {
-            String url = "jdbc:oracle:thin:@localhost:1521/XEPDB1";
-            conn = DriverManager.getConnection(url, "jaden", "jaden");
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.err.println("데이터베이스 연결 실패");
-        }
+        conn = JdbcUtil.getConnection();
     }
 
     @Override
@@ -62,77 +49,60 @@ public class ServerThread extends Thread {
                 String arr[] = data.split(":");
                 loginClick(data);
                 break;
-
             case 2: // 조인 버튼
                 joinClick(data);
                 break;
+            case 3: // 아이디 중복확인
+                checkIdClick(data);
+                break;
+        }
+    }
+    private void checkIdClick(String data) throws IOException{ //ID 중복검사확인
+        String arr = data;
+        try{
+            String sql = "SELECT ID FROM usertable WHERE ID = '" + arr +"'";
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if (rs != null && !rs.isBeforeFirst()) { // DB에 데이터가 없는경우
+                //아이디이용가능
+                bw.write("idPossible"+"\n");
+                bw.flush();
+            } else {
+                // 아이디 이용불가
+                bw.write("idNotPossible"+"\n");
+                bw.flush();
+            }
+        } catch (SQLException sqle){
+            sqle.printStackTrace();
+        } finally {
+            JdbcUtil.close(rs, pstmt);
         }
     }
 
     private void loginClick(String data) throws IOException {
         String arr[] = data.split(":");
-        ArrayList<String> idlist = new ArrayList<>();
-        ArrayList<String> pwList = new ArrayList<>();
-
         try {
-            System.out.println(arr[0]);
             String sql = "SELECT ID, PW FROM usertable WHERE ID = '" + arr[0] + "'";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
-            System.out.println(rs);
-            System.out.println(rs.isBeforeFirst());
-            if (rs != null && !rs.isBeforeFirst()) { // 없는경우
+            if (rs != null && !rs.isBeforeFirst()) { // DB에 데이터가 없는경우
                 loginNo();
             } else {
                 while (rs != null && rs.next()) {
-                    System.out.println(rs.getString("ID") + "/" + rs.getString("PW"));
-                    idlist.add(rs.getString("ID"));
-                    pwList.add(rs.getString("PW"));
-                }
-
-                for (int i = 0; i < idlist.size(); i++) {
-                    System.out.println(idlist.get(i));
-                    if (idlist.get(i).equals(arr[0])) {
-                        if (pwList.get(i).equals(arr[1])) {
-                            loginOk();
-                        } else {
-                            loginNo();
-                        }
-                    } else
+                    String pw = rs.getString("PW");
+                    if(arr[1].equals(pw)){
+                        loginOk();
+                    } else{
                         loginNo();
+                    }
                 }
-
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             System.err.println("쿼리오류");
         } finally {
-            try {
-                if (rs != null) rs.close();
-            } catch (SQLException sqle) {
-            }
-            try {
-                if (pstmt != null) pstmt.clearParameters();
-            } catch (SQLException sqle) {
-            }
+            JdbcUtil.close(rs,pstmt);
         }
-        /*// arr[0] = id , arr[1] = pw
-        if (DB.getUsers().size() != 0) {
-            for (int i = 0; i < DB.getUsers().size(); i++) {
-                if (arr[0].equals(DB.getUsers().get(i).getId())) {
-                    if (arr[1].equals(DB.getUsers().get(i).getPw())) {
-                        loginOk();
-                    } else { //비밀번호 다른경우
-                        loginNo();
-                    }
-                } else { //아이디 없는경우
-                    loginNo();
-                }
-            }
-        } else { // 디비에 데이터가 없는경우
-            loginNo();
-        }*/
-
     }
 
     private void joinClick(String data) {
@@ -143,16 +113,10 @@ public class ServerThread extends Thread {
             pstmt.setString(2, brr[1]);
             pstmt.setString(3, brr[2]);
             pstmt.executeUpdate();
-            System.out.println("성공");
         } catch (SQLException sqle) {
             sqle.printStackTrace();
-            System.err.println("쿼리오류");
         } finally {
-            try {
-                if (pstmt != null) pstmt.close();
-            } catch (SQLException sqle) {
-            }
-            //try{if(conn!=null)conn.close();}catch (SQLException sqle){}
+           JdbcUtil.close(pstmt);
         }
     }
 
