@@ -9,6 +9,8 @@ public class server {
     private ServerSocket serverSocket = null;
     private Socket socket = null;
 
+
+
     public server(){
         try{
             serverSocket = new ServerSocket(11111);
@@ -19,6 +21,7 @@ public class server {
                 System.out.println(ipAddr + " : Connected ");
                 ServerThread serverThread = new ServerThread(socket);
                 serverThread.start();
+
             }
         } catch (IOException ioe){
             ioe.printStackTrace();

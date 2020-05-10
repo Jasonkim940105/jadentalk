@@ -1,7 +1,5 @@
 package server;
 
-import oracle.jdbc.proxy.annotation.Pre;
-
 import java.sql.*;
 
 public class JdbcUtil {

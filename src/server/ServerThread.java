@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.sql.*;
 
+
 public class ServerThread extends Thread {
     Socket socket;
     BufferedWriter bw;
@@ -11,6 +12,7 @@ public class ServerThread extends Thread {
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
+
 
 
     public ServerThread(Socket socket) throws IOException {
@@ -42,7 +44,6 @@ public class ServerThread extends Thread {
         String data = str[1];  //필요한 데이터와 : 구분자
         switch (Integer.parseInt(str[0])) {
             case 1: // 로그인 버튼
-                String arr[] = data.split(":");
                 loginClick(data);
                 break;
             case 2: // 조인 버튼
@@ -51,8 +52,13 @@ public class ServerThread extends Thread {
             case 3: // 아이디 중복확인
                 checkIdClick(data);
                 break;
+            case 4: // 로그인 성공했을 경우\
+                System.out.println("로그인 성공");
+                loginSuccess(data);
         }
     }
+
+
     private void checkIdClick(String data) throws IOException{ //ID 중복검사확인
         String arr = data;
         try{
@@ -75,7 +81,7 @@ public class ServerThread extends Thread {
         }
     }
 
-    private void loginClick(String data) throws IOException {
+    private synchronized void loginClick(String data) throws IOException {
         String arr[] = data.split(":");
         try {
             String sql = "SELECT ID, PW FROM usertable WHERE ID = '" + arr[0] + "'";
@@ -123,6 +129,11 @@ public class ServerThread extends Thread {
 
     private void loginNo() throws IOException {
         bw.write("no" + "\n");
+        bw.flush();
+    }
+
+    private void loginSuccess(String data) throws IOException{
+        bw.write(data+"\n");
         bw.flush();
     }
 

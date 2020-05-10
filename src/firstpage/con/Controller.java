@@ -2,15 +2,13 @@ package firstpage.con;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
+
 
 import java.io.*;
 import java.net.Socket;
@@ -23,11 +21,14 @@ public class Controller implements Initializable {
     private Button btnLogIn, btnMakeAccount, btnsignUpFormErr;
 
     @FXML
+    private Label myId;
+
+    @FXML
     private TextField txtId, signupId, signupEmail;
     @FXML
     private PasswordField txtPw ,signupPw, signupPwCheck;
     @FXML
-    private AnchorPane firstPage, signUpPage, noId, noPw, impossibleId, signUpFormErr;
+    private AnchorPane firstPage, signUpPage, noId, noPw, impossibleId, signUpFormErr, myPage;
 
     private Socket socket = null;
 
@@ -56,7 +57,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void imsiLoginBtnAction(ActionEvent event) {
+    public synchronized void imsiLoginBtnAction(ActionEvent event) {
         String id = txtId.getText();
         //id가 입력안됐을경우
         id = id.trim();
@@ -85,17 +86,21 @@ public class Controller implements Initializable {
         }
         if(check.equals("okay")){
             try{
-                Stage stage = (Stage)btnLogIn.getScene().getWindow();
-                Parent root = FXMLLoader.load(getClass().getResource("../fxml/myPage.fxml"));
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setTitle("Jaden's talk");
-                stage.show();
+                firstPage.setVisible(false);
+                myPage.setVisible(true);
+                bw.write("4@"+txtId.getText()+"\n");
+                bw.flush();
             } catch (Exception e){}
         } else {
             txtId.setText("");
             txtPw.setText("");
         }
+        try {
+            myId.setText(br.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -207,6 +212,15 @@ public class Controller implements Initializable {
         signupPwCheck.setText("");
         signupEmail.setText("");
         signUpPage.setVisible(false);
+        firstPage.setVisible(true);
+    }
+
+    //myPage
+    @FXML
+    public void btnLogout(ActionEvent event){
+        txtId.setText("");
+        txtPw.setText("");
+        myPage.setVisible(false);
         firstPage.setVisible(true);
     }
 

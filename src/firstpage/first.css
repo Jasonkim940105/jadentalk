@@ -8,6 +8,13 @@
     -fx-background-color: #2d4567;
 }
 
+#myPage{
+    -fx-background-color: #f0f1f5;
+}
+#lbMyprofile{
+    -fx-background-color: #959391;
+}
+
 .loginPopUp{
     -fx-background-color: #595959;
 }
@@ -17,4 +24,12 @@
  */
 .sLabel{
     -fx-text-fill: #ffffff;
+}
+
+
+/*
+로그인 후 화면
+ */
+#lbMyProfile{
+    -fx-background-color: #c5c5c5 ;
 }
