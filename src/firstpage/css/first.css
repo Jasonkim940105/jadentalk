@@ -1,6 +1,10 @@
 .backGround{
-    -fx-background-image: url('img/postbox.jpg');
+    -fx-background-image: url('../img/postbox.jpg');
     -fx-background-size: 400 640;
+}
+
+#addPane {
+    -fx-background-color: #2d4567;
 }
 
 

@@ -4,10 +4,13 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class server {
     private ServerSocket serverSocket = null;
     private Socket socket = null;
+    private ArrayList<ServerThread>clientList = new ArrayList<ServerThread>();
+
 
 
 
@@ -19,8 +22,10 @@ public class server {
                 socket = serverSocket.accept();
                 String ipAddr = socket.getInetAddress().getHostAddress();
                 System.out.println(ipAddr + " : Connected ");
-                ServerThread serverThread = new ServerThread(socket);
+                ServerThread serverThread = new ServerThread(clientList, socket);
                 serverThread.start();
+                clientList.add(serverThread);
+                System.out.println(clientList.size());
 
             }
         } catch (IOException ioe){

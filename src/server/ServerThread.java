@@ -1,141 +1,144 @@
 package server;
 
+import firstpage.com.Data;
+import firstpage.com.Protocol;
+
 import java.io.*;
 import java.net.Socket;
 import java.sql.*;
+import java.util.ArrayList;
 
 
 public class ServerThread extends Thread {
     Socket socket;
-    BufferedWriter bw;
-    BufferedReader br;
+    ObjectInputStream ois;
+    ObjectOutputStream oos;
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
 
+    ArrayList<ServerThread> clientList;
 
 
-    public ServerThread(Socket socket) throws IOException {
+
+
+    public ServerThread(ArrayList<ServerThread>clientList, Socket socket) throws IOException {
+        this.clientList = clientList;
         this.socket = socket;
-        br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        ois = new ObjectInputStream(socket.getInputStream());
+        oos = new ObjectOutputStream(socket.getOutputStream());
         conn = JdbcUtil.getConnection();
+
     }
 
     @Override
     public void run() {
         while (true) {
             try {
-                btnCase(getData());
-            } catch (IOException ioe) {
-                System.out.println(ioe.getMessage());
+                Data data = (Data)ois.readObject();
+                btnCase(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
-// 1 로그인 2 조인
 
-    private String[] getData() throws IOException {
-        String fromClient = br.readLine();
-        String str[] = fromClient.split("@");
-        return str;
-    }
-
-    private void btnCase(String[] str) throws IOException {
-        String data = str[1];  //필요한 데이터와 : 구분자
-        switch (Integer.parseInt(str[0])) {
-            case 1: // 로그인 버튼
+    private void btnCase(Data data) throws  IOException{
+        int protocol = data.getProtocol();
+        switch (protocol){
+            case Protocol.LOGIN: {
                 loginClick(data);
                 break;
-            case 2: // 조인 버튼
+            }
+            case Protocol.LOGIN_SUCCESS:{
+                loginSuccess(data);
+                break;
+            }
+            case Protocol.JOIN: {
                 joinClick(data);
                 break;
-            case 3: // 아이디 중복확인
+            }
+            case Protocol.ID_CHECK: {
                 checkIdClick(data);
                 break;
-            case 4: // 로그인 성공했을 경우\
-                System.out.println("로그인 성공");
-                loginSuccess(data);
+            }
+            case Protocol.TEST: {
+                oos.writeObject(data);
+            }
         }
+
     }
-
-
-    private void checkIdClick(String data) throws IOException{ //ID 중복검사확인
-        String arr = data;
-        try{
-            String sql = "SELECT ID FROM usertable WHERE ID = '" + arr +"'";
+    private void checkIdClick(Data data) throws IOException{
+        String sql = "SELECT ID FROM usertable WHERE ID = '" + data.getId() +"'";
+        try {
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
-            if (rs != null && !rs.isBeforeFirst()) { // DB에 데이터가 없는경우
-                //아이디이용가능
-                bw.write("idPossible"+"\n");
-                bw.flush();
+            if(rs != null && !rs.isBeforeFirst()){ // DB에 데이터가 없는경우
+                data.setProtocol(Protocol.ID_UNUSING);
+                oos.writeObject(data);
             } else {
-                // 아이디 이용불가
-                bw.write("idNotPossible"+"\n");
-                bw.flush();
+                data.setProtocol(Protocol.ID_USINGNOW);
+                oos.writeObject(data);
             }
-        } catch (SQLException sqle){
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(rs, pstmt);
+        }
+
+    } // 아이디 중복체크
+    private void loginClick(Data data) throws  IOException{
+        String id = data.getUser().getId();
+        String pw = data.getUser().getPw();
+        try{
+            String sql =  "SELECT ID, PW FROM usertable WHERE ID = '" + id + "'";
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            if(rs != null && ! rs.isBeforeFirst()){
+                loginNo();
+            } else {
+                while (rs != null && rs.next()){
+                    String myP = rs.getString("PW");
+                    if(pw.equals(myP)){
+                        loginOk(data);
+                    } else
+                        loginNo();
+                }
+            }
+        } catch (SQLException sqle ){
             sqle.printStackTrace();
         } finally {
             JdbcUtil.close(rs, pstmt);
         }
-    }
-
-    private synchronized void loginClick(String data) throws IOException {
-        String arr[] = data.split(":");
-        try {
-            String sql = "SELECT ID, PW FROM usertable WHERE ID = '" + arr[0] + "'";
-            pstmt = conn.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-            if (rs != null && !rs.isBeforeFirst()) { // DB에 데이터가 없는경우
-                loginNo();
-            } else {
-                while (rs != null && rs.next()) {
-                    String pw = rs.getString("PW");
-                    if(arr[1].equals(pw)){
-                        loginOk();
-                    } else{
-                        loginNo();
-                    }
-                }
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.err.println("쿼리오류");
-        } finally {
-            JdbcUtil.close(rs,pstmt);
-        }
-    }
-
-    private void joinClick(String data) {
-        String brr[] = data.split(":");
+    } // 로그인 버튼 클릭
+    private void joinClick(Data data) throws IOException{
         try {
             pstmt = conn.prepareStatement("INSERT INTO usertable(ID, PW, EMAIL) values (?, ?, ?)");
-            pstmt.setString(1, brr[0]);
-            pstmt.setString(2, brr[1]);
-            pstmt.setString(3, brr[2]);
+            pstmt.setString(1, data.getUser().getId());
+            pstmt.setString(2, data.getUser().getPw());
+            pstmt.setString(3, data.getUser().getEmail());
             pstmt.executeUpdate();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        } finally {
-           JdbcUtil.close(pstmt);
+        } catch (SQLException e) {
+            // 중복아이디 접근시, 처리
+            e.printStackTrace();
+        }finally {
+            JdbcUtil.close(pstmt);
         }
-    }
 
-    private void loginOk() throws IOException {
-        bw.write("okay" + "\n");
-        bw.flush();
-    }
-
-    private void loginNo() throws IOException {
-        bw.write("no" + "\n");
-        bw.flush();
-    }
-
-    private void loginSuccess(String data) throws IOException{
-        bw.write(data+"\n");
-        bw.flush();
-    }
+    } // 회원가입 버튼 클릭
+    private void loginOk(Data data) throws IOException{
+        data.setProtocol(Protocol.LOGIN_OK);
+        oos.writeObject(data);
+    } // 로그인 가능
+    private void loginNo() throws  IOException{
+        Data data = new Data(Protocol.LOGIN_NO);
+        oos.writeObject(data);
+    } // 로그인 불가능
+    private void loginSuccess(Data data) throws IOException{
+        oos.writeObject(data);
+    } // 로그인 가능시, 클라이언트에게 데이터 던져줌
 
 
 } // class

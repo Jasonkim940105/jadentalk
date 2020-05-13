@@ -16,9 +16,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="400.0" styleClass="backGround" stylesheets="@../first.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="firstpage.con.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="400.0" styleClass="backGround" stylesheets="@../css/first.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="firstpage.con.Controller">
    <children>
-      <AnchorPane id="firstPage" fx:id="firstPage" prefHeight="640.0" prefWidth="400.0" stylesheets="@../first.css">
+      <AnchorPane id="firstPage" fx:id="firstPage" prefHeight="640.0" prefWidth="400.0" stylesheets="@../css/first.css">
          <children>
             <VBox alignment="CENTER_LEFT" layoutX="71.0" layoutY="398.0" prefHeight="138.0" prefWidth="259.0">
                <children>
@@ -35,7 +35,7 @@
             </VBox>
             <HBox alignment="CENTER" layoutX="86.0" layoutY="526.0" prefHeight="100.0" prefWidth="213.0">
                <children>
-                  <Button fx:id="btnLogIn" mnemonicParsing="false" onAction="#imsiLoginBtnAction" prefHeight="35.0" prefWidth="68.0" text="LogIn">
+                  <Button fx:id="btnLogIn" mnemonicParsing="false" onAction="#LoginBtnAction" prefHeight="35.0" prefWidth="68.0" text="LogIn">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
@@ -49,7 +49,7 @@
             </HBox>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="signUpPage" prefHeight="640.0" prefWidth="400.0" stylesheets="@../first.css" visible="false">
+      <AnchorPane fx:id="signUpPage" prefHeight="640.0" prefWidth="400.0" stylesheets="@../css/first.css" visible="false">
          <children>
             <HBox layoutY="99.0" prefHeight="217.0" prefWidth="317.0">
                <children>
@@ -108,7 +108,7 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="107.0" layoutY="474.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="btnMakeAccount" disable="true" mnemonicParsing="false" onAction="#imsiJoinBtnAction" prefHeight="44.0" prefWidth="75.0" text="계정생성">
+                  <Button fx:id="btnMakeAccount" disable="true" mnemonicParsing="false" onAction="#joinBtnAction" prefHeight="44.0" prefWidth="75.0" text="계정생성">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
@@ -124,7 +124,7 @@
             <Button fx:id="idCheck" layoutX="327.0" layoutY="106.0" mnemonicParsing="false" onAction="#idCheck" text="중복확인" />
          </children>
       </AnchorPane>
-      <AnchorPane id="noId" fx:id="noId" layoutX="100.0" layoutY="234.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+      <AnchorPane id="noId" fx:id="noId" layoutX="100.0" layoutY="234.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../css/first.css" visible="false">
          <children>
             <Text layoutX="9.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="존재하지 않는 아이디 입니다" wrappingWidth="181.21875">
                <font>
@@ -134,7 +134,7 @@
             <Button fx:id="btnNoIdOk" layoutX="78.0" layoutY="121.0" mnemonicParsing="false" onAction="#btnNoIdOk" text="확인" />
          </children>
       </AnchorPane>
-      <AnchorPane id="noPw" fx:id="noPw" layoutX="100.0" layoutY="243.0" opacity="0.9" prefHeight="172.0" prefWidth="191.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+      <AnchorPane id="noPw" fx:id="noPw" layoutX="100.0" layoutY="243.0" opacity="0.9" prefHeight="172.0" prefWidth="191.0" styleClass="loginPopUp" stylesheets="@../css/first.css" visible="false">
          <children>
             <Text layoutX="22.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="잘못된 비밀번호 입니다" wrappingWidth="155.21875">
                <font>
@@ -144,7 +144,7 @@
             <Button fx:id="btnNoPwOk" layoutX="67.0" layoutY="122.0" mnemonicParsing="false" onAction="#btnNoPwOk" text="확인" />
          </children>
       </AnchorPane>
-      <AnchorPane id="impossibleID" fx:id="impossibleId" layoutX="110.0" layoutY="244.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+      <AnchorPane id="impossibleID" fx:id="impossibleId" layoutX="110.0" layoutY="244.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../css/first.css" visible="false">
          <children>
             <Text layoutX="9.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="사용할 수 없는 아이디" wrappingWidth="181.21875">
                <font>
@@ -154,7 +154,7 @@
             <Button fx:id="btnImpossibleID" layoutX="78.0" layoutY="121.0" mnemonicParsing="false" onAction="#btnImpossibleID" text="확인" />
          </children>
       </AnchorPane>
-      <AnchorPane id="signUpFormErr" fx:id="signUpFormErr" layoutX="120.0" layoutY="254.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../first.css" visible="false">
+      <AnchorPane id="signUpFormErr" fx:id="signUpFormErr" layoutX="120.0" layoutY="254.0" opacity="0.9" prefHeight="172.0" prefWidth="200.0" styleClass="loginPopUp" stylesheets="@../css/first.css" visible="false">
          <children>
             <Text layoutX="9.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="잘못된 양식입니다. (아이디, 비밀번호 10글자 이내/ 이메일 형식사용) " wrappingWidth="181.21874928474426">
                <font>
@@ -193,13 +193,18 @@
                                           </HBox>
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane prefHeight="80.0" prefWidth="111.0">
+                                    <AnchorPane prefHeight="80.0" prefWidth="143.0">
                                        <children>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <VBox alignment="CENTER" prefHeight="200.0" prefWidth="112.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#btnLogout" text="Logout" />
+                                                <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#btnAdd" text="add">
+                                                   <VBox.margin>
+                                                      <Insets bottom="10.0" />
+                                                   </VBox.margin>
+                                                </Button>
+                                                <Button mnemonicParsing="false" onAction="#btnLogout" prefHeight="27.0" prefWidth="67.0" text="Logout" />
                                              </children>
-                                          </HBox>
+                                          </VBox>
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -217,6 +222,50 @@
                       </TitledPane>
                     </panes>
                   </Accordion>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane id="addPane" fx:id="addPane" prefHeight="640.0" prefWidth="400.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox prefHeight="640.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="186.0" prefWidth="400.0">
+                     <children>
+                        <TextField fx:id="txtFid" alignment="CENTER" prefHeight="27.0" prefWidth="274.0" promptText="추가할 친구 아이디 입력">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="btnAddF" mnemonicParsing="false" text="추가">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="192.0" prefWidth="400.0">
+                     <children>
+                        <TextField fx:id="txtMystate" alignment="CENTER" prefHeight="27.0" prefWidth="274.0" promptText="상태 메세지 입력">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="btnChangeMyState" mnemonicParsing="false" text="변경">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="148.0" prefWidth="400.0">
+                     <children>
+                        <Button fx:id="btnAddPaneComplete" mnemonicParsing="false" onAction="#btnAddPaneComplete" text="완료" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>
