@@ -13,7 +13,17 @@ public final class Protocol {
     public final static int ID_UNUSING = 203; // 중복아이디가 없을 경우
 
 
-    public final static int TEST = 300;
+    public final static int ADD_ID = 300; // 친구추가
+    public final static int FRIEND_ID_NOT_EXIST = 301; //친구추가한 아이디가 없는경우
+    public final static int FRIEND_REQUEST_SUCCESS = 302; //친구요청이 성공정으로 날라간 경우
+    public final static int FRIEND_REQUEST_FAIL = 309; //친구요청 실패
+
+
+    public final static int FRIEND_REQUEST_TO_ME = 400; // 나에게 들어온 친구요청
+    public final static int FRIEND_LIST_SHOW = 401; // 나에게 들어온 친구요청을 전부 보여줌
+    public final static int FRIEND_LIST_EMPTY = 402; // 나에게 들어온 친구요청이 없음
+
+
 
 
 

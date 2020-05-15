@@ -8,6 +8,8 @@ public class User implements Serializable {
     private String nick;
     private String email;
     private String state;
+    private String loginStatus;
+
 
     public User(){
 
@@ -23,6 +25,8 @@ public class User implements Serializable {
         this.id = id;
         this.pw = pw;
     }
+
+
     public String getId() {
         return id;
     }
@@ -62,5 +66,11 @@ public class User implements Serializable {
         this.state = state;
     }
 
+    public String getLoginStatus() {
+        return loginStatus;
+    }
 
+    public void setLoginStatus(String loginStatus) {
+        this.loginStatus = loginStatus;
+    }
 }

@@ -16,8 +16,9 @@ public class Main extends Application {
             stage.setScene(scene);
             stage.setTitle("ME4YOU");
             stage.show();
-        } catch (Exception e){
 
+        } catch (Exception e){
+            System.out.println(e.getMessage());
         }
 
     }

@@ -8,6 +8,9 @@ import java.io.ObjectInputStream;
 public class UserThread extends Thread {
     private ObjectInputStream ois;
 
+    public ObjectInputStream getOis() {
+        return ois;
+    }
 
     public UserThread(ObjectInputStream ois){
         this.ois = ois;
