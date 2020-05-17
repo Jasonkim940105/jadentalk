@@ -230,11 +230,16 @@
                     <panes>
                       <TitledPane animated="false" text="친구목록">
                            <content>
-                              <ListView prefHeight="553.0" prefWidth="398.0" />
+                              <ListView fx:id="friendList" prefHeight="553.0" prefWidth="398.0" />
                            </content>
                       </TitledPane>
                     </panes>
                   </Accordion>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="btnChatStart" mnemonicParsing="false" onAction="#btnChatStartClick" prefHeight="60.0" prefWidth="400.0" text="채팅시작" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>
@@ -255,7 +260,7 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </TextField>
-                        <Button fx:id="btnAddF" mnemonicParsing="false" onAction="#addFriend" text="추가">
+                        <Button id="btnAdd" fx:id="btnAddF" mnemonicParsing="false" onAction="#addFriend" text="추가">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>

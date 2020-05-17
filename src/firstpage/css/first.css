@@ -3,6 +3,14 @@
     -fx-background-size: 400 640;
 }
 
+/*
+#btnAdd{
+    -fx-background-image: url('../img/friendadd.png');
+    -fx-background-size: 30 30;
+
+}
+*/
+
 #addPane {
     -fx-background-color: #2d4567;
 }

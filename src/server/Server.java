@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class server {
+public class Server {
     private ServerSocket serverSocket = null;
     private Socket socket = null;
     private ArrayList<ServerThread>clientList = new ArrayList<ServerThread>();
@@ -14,7 +14,7 @@ public class server {
 
 
 
-    public server(){
+    public Server(){
         try{
             serverSocket = new ServerSocket(11111);
             while (true){
@@ -30,11 +30,10 @@ public class server {
             }
         } catch (IOException ioe){
             ioe.printStackTrace();
-
         }
     }
 
     public static void main(String[] args) {
-        new server();
+        new Server();
     }
 }

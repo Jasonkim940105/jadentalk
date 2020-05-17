@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class Friend implements Serializable {
     private String mid;
     private String fid;
+    private String states;
+
 
     public Friend(){}
 
@@ -12,6 +14,12 @@ public class Friend implements Serializable {
         this.mid = mid;
         this.fid = fid;
     }
+    public Friend(String mid, String fid, String states){
+        this.mid = mid;
+        this.fid = fid;
+        this.states = states;
+    }
+
 
     public String getMid() {
         return mid;

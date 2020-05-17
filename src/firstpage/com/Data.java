@@ -2,6 +2,7 @@ package firstpage.com;
 
 import firstpage.vo.AddFriend;
 import firstpage.vo.Friend;
+import firstpage.vo.Message;
 import firstpage.vo.User;
 
 import java.io.Serializable;
@@ -17,7 +18,10 @@ public class Data implements Serializable {
     private User user;
     private Friend friend;
     private AddFriend addFriend;
-    private ArrayList<String> requestList;
+    private ArrayList<String> list;
+    private String mId;
+    private String fId;
+    private Message message;
 
     public Data(int protocol, AddFriend addFriend){
         this.protocol = protocol;
@@ -46,10 +50,21 @@ public class Data implements Serializable {
         this.email = email;
         this.state = state;
     }
-    public Data(int protocol, ArrayList<String>requestList ){
+    public Data(int protocol, ArrayList<String>list ){
         this.protocol =protocol;
-        this.requestList = requestList;
+        this.list = list;
     }
+    public Data(int protocol, String mId, String fId){
+        this.protocol = protocol;
+        this.mId = mId;
+        this.fId = fId;
+
+    }
+    public Data(int protocol, Message message){
+        this.protocol = protocol;
+        this.message = message;
+    }
+
 
     public String getId() {
         return id;
@@ -123,11 +138,35 @@ public class Data implements Serializable {
         this.addFriend = addFriend;
     }
 
-    public ArrayList<String> getRequestList() {
-        return requestList;
+    public ArrayList<String> getList() {
+        return list;
     }
 
-    public void setRequestList(ArrayList<String> requestList) {
-        this.requestList = requestList;
+    public void setList(ArrayList<String> list) {
+        this.list = list;
+    }
+
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
+    }
+
+    public String getfId() {
+        return fId;
+    }
+
+    public void setfId(String fId) {
+        this.fId = fId;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
     }
 }
