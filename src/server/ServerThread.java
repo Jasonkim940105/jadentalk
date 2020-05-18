@@ -1,28 +1,33 @@
 package server;
 
-import firstpage.com.Data;
-import firstpage.com.Protocol;
-import org.omg.IOP.IOR;
+import client.com.Data;
+import client.com.Protocol;
+
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ServerThread extends Thread {
     Socket socket;
+    String user_id;
     ObjectInputStream ois;
     ObjectOutputStream oos;
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
+    boolean isStop = false;
 
     ArrayList<ServerThread> clientList;
+    HashMap<String, ObjectOutputStream> clientMap;
 
-    public ServerThread(ArrayList<ServerThread>clientList, Socket socket) throws IOException {
+
+    public ServerThread(ArrayList<ServerThread>clientList, HashMap<String, ObjectOutputStream> clientMap, Socket socket) throws IOException {
         this.clientList = clientList;
+        this.clientMap = clientMap;
         this.socket = socket;
         ois = new ObjectInputStream(socket.getInputStream());
         oos = new ObjectOutputStream(socket.getOutputStream());
@@ -31,18 +36,14 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (!isStop) {
             try {
                 Data data = (Data)ois.readObject();
                 btnCase(data);
-            } catch (SocketException e){
-                e.printStackTrace();
-                try {
-                    socket.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            } catch (IOException e) {
+            } catch (IOException e) { // 연결 끊기면
+                clientList.remove(this);
+                isStop = true;
+                System.out.println(socket.getInetAddress() + " 종료되었습니다");
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
@@ -101,9 +102,22 @@ public class ServerThread extends Thread {
             case Protocol.MESSAGE_SEND :{
                 // db에 올려야함
                 sendMessage(data);
-                System.out.println(data.getMessage().getContents());
                 break;
             }
+            case Protocol.CHAT_START : {
+                System.out.println("채팅시작");
+                System.out.println("내 아이디 : "  + data.getmId());
+                System.out.println("친구 아이디 : "  + data.getfId());
+                user_id = data.getmId();
+                synchronized (clientMap){
+                    clientMap.put(user_id, oos);
+                }
+                System.out.println("hashmap size : " + clientMap.size());
+                System.out.println("채팅에 접속한 유저이름의 아웃풋 스트림 : " + clientMap.get(user_id));
+                showPreviousMessage(data);
+                break;
+            }
+
         }
 
     }
@@ -328,9 +342,65 @@ public class ServerThread extends Thread {
 
     } // 친구목록 보여주기
     private void sendMessage(Data data)throws IOException{
+        String sql = "INSERT INTO message(send_id, receive_id, message_contents, readstatus, sendtime) values(?, ?, ?, ?, ?)";
+        Timestamp timestamp = data.getMessage().getTime();
+        String send_id = data.getMessage().getSend_id();
+        String receive_id = data.getMessage().getReceive_id();
+        String message = data.getMessage().getContents();
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, send_id);
+            pstmt.setString(2,receive_id);
+            pstmt.setString(3, message);
+            pstmt.setString(4,data.getMessage().getReadStatus());
+            pstmt.setTimestamp(5, timestamp);
+            pstmt.executeUpdate();
+
+            clientMap.get(receive_id).writeObject(new Data(Protocol.TEST, message)); // nullpoint exception 이 안뜨면 접속해있다는 것.
 
 
-    }
+
+/*
+            String sql2 = "SELECT message_contents from message where send_id=? and receive_id =? and sendtime =?";
+            pstmt = conn.prepareStatement(sql2);
+            pstmt.setString(1, send_id );
+            pstmt.setString(2, receive_id );
+            pstmt.setTimestamp(3, timestamp);
+            rs = pstmt.executeQuery();
+*/
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(pstmt);
+        }
+    } // 메세지 보내기 ( DB 에 message 저장 )
+    private void showPreviousMessage(Data data) throws IOException{
+        String sql = "SELECT message_contents from message where send_id = ? and receive_id = ?";
+        ArrayList<String> pReceiveMessage = new ArrayList<>();
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, data.getfId());
+            pstmt.setString(2, data.getmId());
+            rs = pstmt.executeQuery();
+            while (rs.next()){
+                pReceiveMessage.add(rs.getString("message_contents"));
+            } if (pReceiveMessage.size() != 0){
+                data.setProtocol(Protocol.PREVIOUS_MESSAGE_EXIST);
+                data.setList(pReceiveMessage);
+                oos.writeObject(data);
+            } else {
+                data.setProtocol(Protocol.PRRVIOUS_MESSAGE_EMPTY);
+                oos.writeObject(data);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    } //이전 메세지 불러오기
+
 
 
 

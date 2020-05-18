@@ -1,0 +1,51 @@
+.backGround{
+    -fx-background-image: url('../img/postbox.jpg');
+    -fx-background-size: 400 640;
+}
+
+/*
+#btnAdd{
+    -fx-background-image: url('../img/friendadd.png');
+    -fx-background-size: 30 30;
+
+}
+*/
+
+#changePane{
+    -fx-background-color: #2d4567;
+}
+
+#addPane {
+    -fx-background-color: #2d4567;
+}
+
+
+#signUpPage{
+    -fx-background-color: #2d4567;
+}
+
+#myPage{
+    -fx-background-color: #f0f1f5;
+}
+#lbMyprofile{
+    -fx-background-color: #959391;
+}
+
+.loginPopUp{
+    -fx-background-color: #595959;
+}
+
+/*
+회원가입페이지 라벨
+ */
+.sLabel{
+    -fx-text-fill: #ffffff;
+}
+
+
+/*
+로그인 후 화면
+ */
+#lbMyProfile{
+    -fx-background-color: #c5c5c5 ;
+}
