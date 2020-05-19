@@ -184,7 +184,8 @@ public class Controller implements Initializable {
             Data data = (Data)ois.readObject();
             if(data.getList().size() != 0 ){
                 for(int i = 0 ; i < data.getList().size(); i++){
-                    friendList.getItems().add(data.getList().get(i));
+                    // friendList.getItems().add(data.getList().get(i));
+                    friendList.getItems().add(data.getList().get(i).toString());
                 }
             }
         } catch (IOException e) {
@@ -393,8 +394,6 @@ public class Controller implements Initializable {
 
 
     }
-
-
 
 
     //note AddPage

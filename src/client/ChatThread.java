@@ -2,11 +2,13 @@ package client;
 
 import client.com.Data;
 import client.com.Protocol;
+import client.vo.Message;
 import javafx.scene.control.TextArea;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ChatThread extends Thread {
     private ObjectInputStream ois;
@@ -52,10 +54,12 @@ public class ChatThread extends Thread {
     }
 
     private void showPreviousMessage(Data data) throws IOException{
-        ArrayList<String> messageList = new ArrayList<>();
+        ArrayList<Message> messageList = new ArrayList<>();
         messageList = data.getList();
+        Collections.sort(messageList);
+
         for(int i = 0 ; i < messageList.size(); i++){
-            taChatMain.appendText(messageList.get(i)+ "\n");
+            taChatMain.appendText("["+ messageList.get(i).getSend_id() +"] "  +messageList.get(i).getContents() +" :: " +  messageList.get(i).getTime()+"\n");
         }
     }
     private void previousMessageEmpty(Data data) throws IOException{

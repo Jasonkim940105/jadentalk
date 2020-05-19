@@ -37,8 +37,8 @@ public class ChatController implements Initializable {
     private Socket socket = null;
     private ObjectInputStream ois = null;
     private ObjectOutputStream oos = null;
-    private BufferedReader br;
-    String sendData;
+
+
 
 
     @Override
@@ -50,12 +50,10 @@ public class ChatController implements Initializable {
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
             ChatThread chatThread = new ChatThread(ois, taChatMain);
-            //먼저 생성되면서 동시에 기존 글을 긁어와야함 그치?
+            //생성되면서 동시에 기존 글을 뿌려준다.
             Data data = new Data(Protocol.CHAT_START, mid, fid);
             oos.writeObject(data);
             chatThread.start();
-
-
 
         } catch (IOException e) {
             e.printStackTrace();

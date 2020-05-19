@@ -5,7 +5,7 @@ import oracle.sql.DATE;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Message implements Serializable {
+public class Message implements Serializable ,Comparable<Message>{
     private String send_id;
     private String receive_id;
     private DATE send_time;
@@ -13,6 +13,10 @@ public class Message implements Serializable {
     private String readStatus;
     private Timestamp time;
 
+    @Override
+    public int compareTo(Message message) {
+        return this.time.compareTo(message.time);
+    }
 
     public Message(){}
 
@@ -22,7 +26,11 @@ public class Message implements Serializable {
         this.contents= contents;
         this.readStatus = "x";
         this.time = time;
-
+    }
+    public Message(String send_id, String receive_id, Timestamp timestamp){
+        this.send_id = send_id;
+        this.receive_id = receive_id;
+        this.time = timestamp;
     }
 
     public String getSend_id() {

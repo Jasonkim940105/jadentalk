@@ -6,6 +6,7 @@ import client.vo.Message;
 import client.vo.User;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Data implements Serializable {
@@ -18,11 +19,14 @@ public class Data implements Serializable {
     private User user;
     private Friend friend;
     private AddFriend addFriend;
-    private ArrayList<String> list;
+    private ArrayList list;
     private String mId;
     private String fId;
     private Message message;
     private String myState;
+
+
+
 
 
     public Data(int protocol, AddFriend addFriend){
@@ -52,7 +56,7 @@ public class Data implements Serializable {
         this.email = email;
         this.state = state;
     }
-    public Data(int protocol, ArrayList<String>list ){
+    public Data(int protocol, ArrayList list ){
         this.protocol =protocol;
         this.list = list;
     }
@@ -142,11 +146,11 @@ public class Data implements Serializable {
         this.addFriend = addFriend;
     }
 
-    public ArrayList<String> getList() {
+    public ArrayList getList() {
         return list;
     }
 
-    public void setList(ArrayList<String> list) {
+    public void setList(ArrayList list) {
         this.list = list;
     }
 
@@ -174,5 +178,11 @@ public class Data implements Serializable {
         this.message = message;
     }
 
+    public String getMyState() {
+        return myState;
+    }
 
+    public void setMyState(String myState) {
+        this.myState = myState;
+    }
 }

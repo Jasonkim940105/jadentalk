@@ -2,6 +2,7 @@ package server;
 
 import client.com.Data;
 import client.com.Protocol;
+import client.vo.Message;
 
 
 import java.io.*;
@@ -108,12 +109,12 @@ public class ServerThread extends Thread {
                 System.out.println("채팅시작");
                 System.out.println("내 아이디 : "  + data.getmId());
                 System.out.println("친구 아이디 : "  + data.getfId());
-                user_id = data.getmId();
+                user_id = data.getfId();
                 synchronized (clientMap){
                     clientMap.put(user_id, oos);
                 }
                 System.out.println("hashmap size : " + clientMap.size());
-                System.out.println("채팅에 접속한 유저이름의 아웃풋 스트림 : " + clientMap.get(user_id));
+                System.out.println("채팅에 접속한 유저이름를 향 아웃풋 스트림 : " + clientMap.get(user_id));
                 showPreviousMessage(data);
                 break;
             }
@@ -388,27 +389,45 @@ public class ServerThread extends Thread {
         }
     } // 메세지 보내기 ( DB 에 message 저장 )
     private void showPreviousMessage(Data data) throws IOException{
-        String sql = "SELECT message_contents from message where send_id = ? and receive_id = ?";
-        ArrayList<String> pReceiveMessage = new ArrayList<>();
-
+        String sql = "SELECT message_contents, sendtime from message where send_id = ? and receive_id = ?";
+        ArrayList<Message> messages = new ArrayList<>();
         try {
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, data.getfId());
+            pstmt.setString(1, data.getfId()); // 친구가 나에게 보낸 메세지
             pstmt.setString(2, data.getmId());
             rs = pstmt.executeQuery();
             while (rs.next()){
-                pReceiveMessage.add(rs.getString("message_contents"));
-            } if (pReceiveMessage.size() != 0){
-                data.setProtocol(Protocol.PREVIOUS_MESSAGE_EXIST);
-                data.setList(pReceiveMessage);
-                oos.writeObject(data);
+                messages.add(new Message(data.getfId(),data.getmId(),rs.getString("message_contents"),rs.getTimestamp("sendtime")));  //받은 메세지
+
+            } if (messages.size() != 0){
+                Data data1 = new Data(Protocol.PREVIOUS_MESSAGE_EXIST, messages);
+//                oos.writeObject(data1);
+
+            } else {
+                data.setProtocol(Protocol.PRRVIOUS_MESSAGE_EMPTY);
+//                oos.writeObject(data);
+            }
+            String sql2 = "SELECT message_contents, sendtime from message where send_id = ? and receive_id = ?";
+            pstmt = conn.prepareStatement(sql2);
+            pstmt.setString(1, data.getmId()); //내가 친구에게 보낸 메세지
+            pstmt.setString(2, data.getfId());
+            rs = pstmt.executeQuery();
+            while (rs.next()){
+                messages.add(new Message(data.getmId(),data.getfId(),rs.getString("message_contents"),rs.getTimestamp("sendtime")));  //받은 메세지
+
+            } if (messages.size() != 0){
+                Data data1 = new Data(Protocol.PREVIOUS_MESSAGE_EXIST, messages);
+                oos.writeObject(data1);
+
             } else {
                 data.setProtocol(Protocol.PRRVIOUS_MESSAGE_EMPTY);
                 oos.writeObject(data);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
 
     } //이전 메세지 불러오기
     private void chageMyState(Data data) throws IOException{
