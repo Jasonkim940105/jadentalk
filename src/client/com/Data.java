@@ -22,6 +22,7 @@ public class Data implements Serializable {
     private String mId;
     private String fId;
     private Message message;
+    private String myState;
 
 
     public Data(int protocol, AddFriend addFriend){
@@ -65,6 +66,7 @@ public class Data implements Serializable {
         this.protocol = protocol;
         this.message = message;
     }
+
 
 
 

@@ -19,6 +19,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -44,6 +45,12 @@ public class Controller implements Initializable {
     //note myPage
     @FXML
     private Label myId;
+    @FXML
+    private Label lbMyState;
+
+    //note chagePane
+    @FXML
+    private TextField txtStates;
     //note addPage
     @FXML
     private TextField txtFid, txtMystate;
@@ -70,8 +77,6 @@ public class Controller implements Initializable {
             ois = new ObjectInputStream(socket.getInputStream());
             lvRequestFriendList.setItems(FXCollections.observableArrayList());
             friendList.setItems(FXCollections.observableArrayList());
-
-
         } catch (IOException ioe){
             ioe.printStackTrace();
         }
@@ -85,6 +90,15 @@ public class Controller implements Initializable {
     private void showFriendList(){ // 접속한 아이디의 친구목록을 요청할 메소드
         String id = getLoginId();
         Data data = new Data(Protocol.FRIEND_LIST_SHOW, id);
+        try {
+            oos.writeObject(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void showMyState(){
+        String id = getLoginId();
+        Data data = new Data(Protocol.MY_STATE_SHOW, id);
         try {
             oos.writeObject(data);
         } catch (IOException e) {
@@ -173,6 +187,18 @@ public class Controller implements Initializable {
                     friendList.getItems().add(data.getList().get(i));
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        showMyState();
+
+        try {
+            Data data = (Data)ois.readObject();
+            String state =data.getId();
+            lbMyState.setText(state);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -353,13 +379,8 @@ public class Controller implements Initializable {
     public void btnChatStartClick(){
         Stage stage = new Stage();
         ChatStart chatStart= new ChatStart();
-        ChatController chatController = new ChatController();
         String fid = getSelectFriend();
         System.out.println("passing value = " + fid);
-        /*
-        기존에 했던 방법 - >
-        chatController.lbFriendId.setText(fid);
-         */
         ChatController.mid = theUser.getId();
         ChatController.fid = fid ;
 
@@ -373,17 +394,10 @@ public class Controller implements Initializable {
 
     }
 
-    @FXML
-    public void btnChangeClick(ActionEvent event){
-        myPage.setVisible(false);
-        changePane.setVisible(true);
-
-    }
 
 
 
     //note AddPage
-
     @FXML
     public void addFriend(ActionEvent event) {
         String sendId = theUser.getId();
@@ -425,6 +439,7 @@ public class Controller implements Initializable {
         }
 
     }
+
     @FXML
     public void btnRequestAccept(ActionEvent event){
         String mId = theUser.getId();
@@ -461,7 +476,6 @@ public class Controller implements Initializable {
 
 
     }  //친구요청수락
-
     @FXML
     public void btnRequestRefuse(ActionEvent event){
         String mId = theUser.getId();
@@ -496,6 +510,90 @@ public class Controller implements Initializable {
         lvRequestFriendList.getItems().clear();
         addPane.setVisible(false);
         myPage.setVisible(true);
+
+    }
+
+    //note ChagePane
+    @FXML
+    public void btnChangeClick(ActionEvent event){
+        myPage.setVisible(false);
+        changePane.setVisible(true);
+        Data data = new Data(Protocol.MY_STATE_LOAD, theUser.getId());
+        try {
+            oos.writeObject(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Data data1 = (Data)ois.readObject();
+            txtStates.setText(data1.getId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+    @FXML
+    public void btnChangeBackClick(ActionEvent event){
+        txtStates.setText("");
+        changePane.setVisible(false);
+        myPage.setVisible(true);
+
+        showMyState();
+
+        try {
+            Data data = (Data)ois.readObject();
+            String state = data.getId();
+            lbMyState.setText(state);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+    @FXML
+    public void btnStateChangeClick(ActionEvent event){
+        String myState = txtStates.getText();
+        Data data = new Data(Protocol.MY_STATE_CHAGE ,theUser.getId(), myState);
+        try {
+            oos.writeObject(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            data = (Data)ois.readObject();
+            if(data.getProtocol() == Protocol.MY_STATE_CHAGE_OK){
+                txtStates.setText(myState);
+                theUser.setState(myState);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("상태메세지");
+                alert.setHeaderText("상태메세지 변경");
+                alert.setContentText("상태메세지 변경이 완료되었습니다");
+                alert.showAndWait();
+            } else if (data.getProtocol() == Protocol.MY_STATE_CHAGE_FAIL){
+                txtStates.setText("");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("상태메세지");
+                alert.setHeaderText("상태메세지 변경");
+                alert.setContentText("상태메세지 변경에 실패해였습니다.");
+                alert.showAndWait();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                txtStates.setText("");
+                alert.setTitle("상태메세지");
+                alert.setHeaderText("상태메세지 변경");
+                alert.setContentText("상태메세지 변경에 실패해였습니다.");
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 

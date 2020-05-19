@@ -36,6 +36,12 @@ public final class Protocol {
     public final static int PRRVIOUS_MESSAGE_EMPTY = 503; // 이전 메세지 없음
 
 
+    public final static int MY_STATE_CHAGE = 800; // 내 상태메세지 변경
+    public final static int MY_STATE_CHAGE_OK = 801; // 상태메세지 변경완료
+    public final static int MY_STATE_CHAGE_FAIL = 802; // 상태메세지 변경실패
+    public final static int MY_STATE_LOAD = 803; // 내 상태메세지 불러오기
+    public final static int MY_STATE_SHOW = 804; // 내 상태메세지 보여주기
+
     public final static int TEST = 999;
 
 

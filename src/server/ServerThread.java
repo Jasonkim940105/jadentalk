@@ -117,6 +117,18 @@ public class ServerThread extends Thread {
                 showPreviousMessage(data);
                 break;
             }
+            case Protocol.MY_STATE_CHAGE :{
+                chageMyState(data);
+                break;
+            }
+            case Protocol.MY_STATE_LOAD :{
+                showMyState(data);
+                break;
+            }
+            case Protocol.MY_STATE_SHOW : {
+                showMyState(data);
+                break;
+            }
 
         }
 
@@ -318,7 +330,6 @@ public class ServerThread extends Thread {
     private void showFriendList(Data data) throws  IOException {
         String sql =  "SELECT friend_id from friendtable where my_id = ? ";
         ArrayList<String> frinedList = new ArrayList<>();
-
         try {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, data.getId());
@@ -400,6 +411,43 @@ public class ServerThread extends Thread {
         }
 
     } //이전 메세지 불러오기
+    private void chageMyState(Data data) throws IOException{
+        String sql =  "UPDATE usertable SET states = ? WHERE id = ?";
+        String id = data.getmId();
+        String state = data.getfId();
+        System.out.println(state);
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, state); //getId --> state
+            pstmt.setString(2, id);
+            pstmt.executeUpdate();
+            data.setProtocol(Protocol.MY_STATE_CHAGE_OK);
+        } catch (SQLException e) {
+            data.setProtocol(Protocol.MY_STATE_CHAGE_FAIL);
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(pstmt);
+        }
+        oos.writeObject(data);
+    } //상태메세지 변경
+    private void showMyState(Data data) throws  IOException{
+        String sql = "SELECT states FROM usertable WHERE id = ? ";
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, data.getId());
+            rs = pstmt.executeQuery();
+            while (rs.next()){
+                String myState = rs.getString("states");
+                data.setId(myState);
+                oos.writeObject(data);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(rs, pstmt);
+        }
+
+    }
 
 
 
