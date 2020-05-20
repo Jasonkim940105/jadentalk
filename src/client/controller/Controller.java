@@ -162,6 +162,14 @@ public class Controller implements Initializable {
                 alert.showAndWait();
                 theUser = null;
                 return;
+            } else if (protocol == Protocol.LOGIN_ALREADY){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("로그인실패");
+                alert.setContentText("로그인에 실패하였습니다");
+                alert.setContentText("이미 접속된 상태입니다.");
+                alert.showAndWait();
+                theUser = null;
+                return;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -327,6 +335,8 @@ public class Controller implements Initializable {
     public void btnLogout(ActionEvent event){
         txtId.setText("");
         txtPw.setText("");
+        lbMyState.setText("");
+        txtStates.setText("");
         try {
             Data data = new Data(Protocol.LOGOUT, theUser);
             oos.writeObject(data);

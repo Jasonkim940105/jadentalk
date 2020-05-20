@@ -11,7 +11,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,15 +31,11 @@ public class ChatController implements Initializable {
     @FXML
     private TextField taSendbox;
 
-
     public static String mid = null;
-    public static String fid = null; // 다른방법이 없을까?
+    public static String fid = null;
     private Socket socket = null;
     private ObjectInputStream ois = null;
     private ObjectOutputStream oos = null;
-
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -51,9 +47,10 @@ public class ChatController implements Initializable {
             ois = new ObjectInputStream(socket.getInputStream());
             ChatThread chatThread = new ChatThread(ois, taChatMain);
             //생성되면서 동시에 기존 글을 뿌려준다.
-            Data data = new Data(Protocol.CHAT_START, mid, fid);
+            Data data = new Data(Protocol.CHAT_START, mid, fid); //
             oos.writeObject(data);
             chatThread.start();
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,7 +72,7 @@ public class ChatController implements Initializable {
             e.printStackTrace();
         }
         taSendbox.setText("");
-        taChatMain.appendText(message.getContents()+"\n");
+        taChatMain.appendText("["+mid+"]"+ " " + message.getContents()+"\n");
 
     }
 

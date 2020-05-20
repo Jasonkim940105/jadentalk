@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 
 public class ServerThread extends Thread {
@@ -43,6 +44,11 @@ public class ServerThread extends Thread {
                 btnCase(data);
             } catch (IOException e) { // 연결 끊기면
                 clientList.remove(this);
+                if(clientMap.size() > 0 ){
+
+                } else {
+                    isStop = true;
+                }
                 isStop = true;
                 System.out.println(socket.getInetAddress() + " 종료되었습니다");
                 e.printStackTrace();
@@ -109,12 +115,12 @@ public class ServerThread extends Thread {
                 System.out.println("채팅시작");
                 System.out.println("내 아이디 : "  + data.getmId());
                 System.out.println("친구 아이디 : "  + data.getfId());
-                user_id = data.getfId();
+                user_id = data.getmId();
                 synchronized (clientMap){
                     clientMap.put(user_id, oos);
                 }
+                System.out.println("채팅방이 켜질때 hashmap에 들어가는 outputstream: " + clientMap.get(user_id));
                 System.out.println("hashmap size : " + clientMap.size());
-                System.out.println("채팅에 접속한 유저이름를 향 아웃풋 스트림 : " + clientMap.get(user_id));
                 showPreviousMessage(data);
                 break;
             }
@@ -128,6 +134,10 @@ public class ServerThread extends Thread {
             }
             case Protocol.MY_STATE_SHOW : {
                 showMyState(data);
+                break;
+            }
+            case Protocol.TEST : {
+                System.out.println("******");
                 break;
             }
 
@@ -174,7 +184,7 @@ public class ServerThread extends Thread {
         String id = data.getUser().getId();
         String pw = data.getUser().getPw();
         try{
-            String sql =  "SELECT ID, PW FROM usertable WHERE ID = ?";
+            String sql =  "SELECT ID, PW, loginstatus FROM usertable WHERE ID = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, data.getUser().getId());
             rs = pstmt.executeQuery();
@@ -184,7 +194,10 @@ public class ServerThread extends Thread {
                 while (rs != null && rs.next()){
                     String myP = rs.getString("PW");
                     if(pw.equals(myP)){
-                        loginOk(data);
+                        if(rs.getString("loginstatus").equals("x")){
+                            loginOk(data);
+                        } else
+                            loginAlready();
                     } else
                         loginNo();
                 }
@@ -217,6 +230,11 @@ public class ServerThread extends Thread {
         Data data = new Data(Protocol.LOGIN_NO);
         oos.writeObject(data);
     } // 로그인 불가능
+    private void loginAlready() throws IOException{
+        Data data = new Data(Protocol.LOGIN_ALREADY);
+        oos.writeObject(data);
+
+    } // 이미 로그인된 상태
     private void loginSuccess(Data data) throws IOException{
         String sql = "UPDATE usertable set loginstatus = ? where id = ?";
         try{
@@ -369,25 +387,18 @@ public class ServerThread extends Thread {
             pstmt.setTimestamp(5, timestamp);
             pstmt.executeUpdate();
 
-            clientMap.get(receive_id).writeObject(new Data(Protocol.TEST, message)); // nullpoint exception 이 안뜨면 접속해있다는 것.
-
-
-
-/*
-            String sql2 = "SELECT message_contents from message where send_id=? and receive_id =? and sendtime =?";
-            pstmt = conn.prepareStatement(sql2);
-            pstmt.setString(1, send_id );
-            pstmt.setString(2, receive_id );
-            pstmt.setTimestamp(3, timestamp);
-            rs = pstmt.executeQuery();
-*/
-
+            System.out.println("메세지를 쏴줄 outputstream : " + clientMap.get(data.getMessage().getReceive_id()));
+            try{
+                clientMap.get(data.getMessage().getReceive_id()).writeObject(new Data(Protocol.MESSAGE_RECEIVE_REALTIME, data.getMessage()));
+            } catch (NullPointerException e ){
+                System.out.println("받는 사람이 채팅창을 켜놓지 않았다.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             JdbcUtil.close(pstmt);
         }
-    } // 메세지 보내기 ( DB 에 message 저장 )
+    } // 메세지 보내기 ( DB 에 message 저장 , 서버에서 해당 소켓으로 메세지 쏴줌)
     private void showPreviousMessage(Data data) throws IOException{
         String sql = "SELECT message_contents, sendtime from message where send_id = ? and receive_id = ?";
         ArrayList<Message> messages = new ArrayList<>();
@@ -466,7 +477,7 @@ public class ServerThread extends Thread {
             JdbcUtil.close(rs, pstmt);
         }
 
-    }
+    } //상태메세지 보여주기
 
 
 

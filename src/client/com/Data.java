@@ -26,9 +26,6 @@ public class Data implements Serializable {
     private String myState;
 
 
-
-
-
     public Data(int protocol, AddFriend addFriend){
         this.protocol = protocol;
         this.addFriend = addFriend;

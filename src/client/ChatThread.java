@@ -13,6 +13,7 @@ import java.util.Collections;
 public class ChatThread extends Thread {
     private ObjectInputStream ois;
     private TextArea taChatMain;
+    private boolean isStop = false;
 
     public ChatThread(ObjectInputStream ois, TextArea taChatMain){
         this.ois = ois;
@@ -21,15 +22,17 @@ public class ChatThread extends Thread {
 
     @Override
     public void run() {
-        try {
-            Data data = (Data)ois.readObject();
-            readCase(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        while (!isStop){
+            try {
+                Data data = (Data)ois.readObject();
+                readCase(data);
+            } catch (IOException e) {
+                isStop = true;
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     //들어온 데이터 짤라줄 메소드
@@ -45,9 +48,10 @@ public class ChatThread extends Thread {
                 previousMessageEmpty(data);
                 break;
             }
-
-            case Protocol.TEST : {
-                System.out.println(" *** " + data.getMessage());
+            case Protocol.MESSAGE_RECEIVE_REALTIME : {
+                System.out.println(data.getMessage().getContents());
+                String message = data.getMessage().getContents();
+                taChatMain.appendText("["+ data.getMessage().getSend_id()+ "]"+ message+"\n");
                 break;
             }
         }

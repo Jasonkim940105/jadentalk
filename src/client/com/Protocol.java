@@ -4,6 +4,7 @@ public final class Protocol {
     public final static int LOGIN = 100; // 로그인
     public final static int LOGIN_OK = 101; // 로그인 성공
     public final static int LOGIN_NO = 102; // 로그인 실패
+    public final static int LOGIN_ALREADY = 103; // 이미 로그인된 상태
     public final static int LOGIN_SUCCESS = 108; // 로그인 성공후, myPage 이동
     public final static int LOGOUT = 109; // 로그아웃
 
@@ -34,6 +35,7 @@ public final class Protocol {
     public final static int CHAT_START = 501; //채팅시작, 기존 글들 긁어오기
     public final static int PREVIOUS_MESSAGE_EXIST = 502; // 이전 메세지 있음
     public final static int PRRVIOUS_MESSAGE_EMPTY = 503; // 이전 메세지 없음
+    public final static int MESSAGE_RECEIVE_REALTIME = 504; // 즉시 메세지 읽어오기
 
 
     public final static int MY_STATE_CHAGE = 800; // 내 상태메세지 변경
