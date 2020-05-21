@@ -26,7 +26,7 @@
                   </VBox>
                </children>
             </HBox>
-            <TextArea fx:id="taChatMain" prefHeight="316.0" prefWidth="378.0" />
+            <TextArea fx:id="taChatMain" prefHeight="323.0" prefWidth="378.0" />
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <TextField fx:id="taSendbox" prefHeight="97.0" prefWidth="266.0">

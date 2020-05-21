@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+
 
 
 public class ServerThread extends Thread {
@@ -42,11 +42,14 @@ public class ServerThread extends Thread {
             try {
                 Data data = (Data)ois.readObject();
                 btnCase(data);
-            } catch (IOException e) { // 연결 끊기면
+            }catch (EOFException e){ //todo : 비안정화
+                isStop = true;
+                System.out.println("클라이언트 연결 종료");
+            }
+            catch (IOException e) { // 연결 끊기면
                 clientList.remove(this);
-                if(clientMap.size() > 0 ){
-
-                } else {
+                if(clientMap.size() > 0 ){}
+                else {
                     isStop = true;
                 }
                 isStop = true;
@@ -143,7 +146,7 @@ public class ServerThread extends Thread {
 
         }
 
-    }
+    } // case 분기
     private void checkIdClick(Data data) throws IOException{
         String sql = "SELECT ID FROM usertable WHERE ID = ?";
         try {
@@ -194,10 +197,12 @@ public class ServerThread extends Thread {
                 while (rs != null && rs.next()){
                     String myP = rs.getString("PW");
                     if(pw.equals(myP)){
-                        if(rs.getString("loginstatus").equals("x")){
+                        /*if(rs.getString("loginstatus").equals("x")){
                             loginOk(data);
-                        } else
+                        } else {
                             loginAlready();
+                        }*/
+                        loginOk(data);
                     } else
                         loginNo();
                 }
@@ -364,6 +369,7 @@ public class ServerThread extends Thread {
                 data.setProtocol(Protocol.FRIEND_LIST_SHOW_EMPTY);
                 oos.writeObject(data);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -478,11 +484,6 @@ public class ServerThread extends Thread {
         }
 
     } //상태메세지 보여주기
-
-
-
-
-
 
 } // class
 

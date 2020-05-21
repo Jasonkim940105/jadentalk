@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
@@ -14,7 +15,9 @@ public class Main extends Application {
             Parent root = FXMLLoader.load(getClass().getResource("fxml/first.fxml"));
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("ME2YOU");
+            stage.setTitle("까까오똒");
+            stage.setResizable(false);
+            //stage.initStyle(StageStyle.UTILITY);
             stage.show();
 
         } catch (Exception e){

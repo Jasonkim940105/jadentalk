@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 
 public class ChatController implements Initializable {
 
+//todo : 동시에 여러 메세지를 보내게 하려면..
 
     @FXML
     private  Label lbFriendId;
@@ -65,16 +66,16 @@ public class ChatController implements Initializable {
         Message message = new Message(mid, fid, contents, time);
         System.out.println("보낸시간 : " + time);
 
-        Data data = new Data(Protocol.MESSAGE_SEND, message);
+        Data data = new Data(Protocol.MESSAGE_SEND, message);  //  서버로 메세지 전송
         try {
             oos.writeObject(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
         taSendbox.setText("");
-        taChatMain.appendText("["+mid+"]"+ " " + message.getContents()+"\n");
+        taChatMain.appendText("["+mid+"]"+ " " + message.getContents()+"\n"); // 내 채팅화면에 append
 
-    }
+    } // 메세지 보내기
 
     public Socket getSocket() {
         return socket;

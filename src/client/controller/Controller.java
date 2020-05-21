@@ -1,11 +1,12 @@
 package client.controller;
 
-import client.UserThread;
 import client.com.ChatStart;
 import client.com.Data;
 import client.com.Protocol;
 import client.vo.AddFriend;
 import client.vo.User;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,9 +18,9 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -65,7 +66,6 @@ public class Controller implements Initializable {
     private Socket socket = null;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-    private UserThread user;
     private User theUser = null; //현재 접속한 유저정보가 담김
 
     //메소드
@@ -77,12 +77,18 @@ public class Controller implements Initializable {
             ois = new ObjectInputStream(socket.getInputStream());
             lvRequestFriendList.setItems(FXCollections.observableArrayList());
             friendList.setItems(FXCollections.observableArrayList());
+            signupId.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    btnMakeAccount.setDisable(true);
+                }
+            });
+
         } catch (IOException ioe){
             ioe.printStackTrace();
         }
 
     }
-
 
     private String getLoginId(){
         return theUser.getId();
@@ -109,10 +115,28 @@ public class Controller implements Initializable {
         String fid = friendList.getSelectionModel().getSelectedItem();
         return fid;
     }
+    private void resetFriendList(){
+        friendList.getItems().clear();
+        try {
+            Data data = (Data)ois.readObject();
+            if(data.getList().size() != 0 ){
+                for(int i = 0 ; i < data.getList().size(); i++){
+                    // friendList.getItems().add(data.getList().get(i));
+                    friendList.getItems().add(data.getList().get(i).toString());
+                }
+            }
+        } catch (NullPointerException e){
+            friendList.getItems().add("추가된 친구가 없습니다");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void clearFriendList(){
         friendList.getItems().clear();
     }
-
     //note 첫페이지
     @FXML
     public void singUpBtnAction(ActionEvent event){
@@ -141,7 +165,13 @@ public class Controller implements Initializable {
             //theUser = user;
             Data data = new Data(Protocol.LOGIN, user);
             oos.writeObject(data);
-        } catch (IOException e) {
+        } catch (SocketException se){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("서버오류");
+            alert.setContentText("서버가 종료된 상태입니다");
+            alert.showAndWait();
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         try {
@@ -187,21 +217,7 @@ public class Controller implements Initializable {
         }
 
         showFriendList();
-
-        try {
-            Data data = (Data)ois.readObject();
-            if(data.getList().size() != 0 ){
-                for(int i = 0 ; i < data.getList().size(); i++){
-                    // friendList.getItems().add(data.getList().get(i));
-                    friendList.getItems().add(data.getList().get(i).toString());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        resetFriendList();
         showMyState();
 
         try {
@@ -214,21 +230,20 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
 
-
-        //  showFriendList(); //#########################################################################
     }
     @FXML
     public void btnNoIdOk(ActionEvent event){
         noId.setVisible(false);
         firstPage.setVisible(true);
     }
+
     @FXML
     public void btnNoPwOk(ActionEvent event){
         noPw.setVisible(false);
         firstPage.setVisible(true);
     }
-
     //note signUpPage
+
     @FXML
     public void txtCheckPw(ActionEvent event){
         if(!signupPw.getText().equals( signupPwCheck.getText())){
@@ -278,6 +293,7 @@ public class Controller implements Initializable {
     public void btnsignUpFormErr(ActionEvent event){
         signUpFormErr.setVisible(false);
     }
+
     @FXML
     public void joinBtnAction(ActionEvent event){
         if(!(signupPw.getText().equals(signupPwCheck.getText()))){
@@ -329,7 +345,6 @@ public class Controller implements Initializable {
         firstPage.setVisible(true);
     }
 
-
     //note myPage
     @FXML
     public void btnLogout(ActionEvent event){
@@ -357,6 +372,7 @@ public class Controller implements Initializable {
         myPage.setVisible(false);
         firstPage.setVisible(true);
     }
+
     @FXML
     public void btnAdd(ActionEvent event){
         myPage.setVisible(false);
@@ -390,23 +406,28 @@ public class Controller implements Initializable {
     public void btnChatStartClick(){
         Stage stage = new Stage();
         ChatStart chatStart= new ChatStart();
+
         String fid = getSelectFriend();
+        if(fid == null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("친구를 선택해주세요");
+            alert.setContentText("채팅을 시작할 친구를 선택해주세요");
+            alert.showAndWait();
+            return;
+        }
         System.out.println("passing value = " + fid);
         ChatController.mid = theUser.getId();
         ChatController.fid = fid ;
-
 
         try {
             chatStart.start(stage);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
-
     //note AddPage
+
     @FXML
     public void addFriend(ActionEvent event) {
         String sendId = theUser.getId();
@@ -448,7 +469,6 @@ public class Controller implements Initializable {
         }
 
     }
-
     @FXML
     public void btnRequestAccept(ActionEvent event){
         String mId = theUser.getId();
@@ -485,6 +505,7 @@ public class Controller implements Initializable {
 
 
     }  //친구요청수락
+
     @FXML
     public void btnRequestRefuse(ActionEvent event){
         String mId = theUser.getId();
@@ -512,13 +533,15 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     } //친구요청거절
-
     @FXML
     public void btnAddPaneComplete(ActionEvent event){
         txtFid.setText("");
         lvRequestFriendList.getItems().clear();
         addPane.setVisible(false);
         myPage.setVisible(true);
+
+        showFriendList();
+        resetFriendList();
 
     }
 

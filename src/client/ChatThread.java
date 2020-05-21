@@ -4,9 +4,9 @@ import client.com.Data;
 import client.com.Protocol;
 import client.vo.Message;
 import javafx.scene.control.TextArea;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -14,6 +14,7 @@ public class ChatThread extends Thread {
     private ObjectInputStream ois;
     private TextArea taChatMain;
     private boolean isStop = false;
+
 
     public ChatThread(ObjectInputStream ois, TextArea taChatMain){
         this.ois = ois;
@@ -26,6 +27,9 @@ public class ChatThread extends Thread {
             try {
                 Data data = (Data)ois.readObject();
                 readCase(data);
+            } catch (SocketException e){
+                isStop = true;
+                System.out.println("연결종료");
             } catch (IOException e) {
                 isStop = true;
                 e.printStackTrace();
@@ -55,18 +59,25 @@ public class ChatThread extends Thread {
                 break;
             }
         }
-    }
-
+    } // 분기
     private void showPreviousMessage(Data data) throws IOException{
         ArrayList<Message> messageList = new ArrayList<>();
         messageList = data.getList();
         Collections.sort(messageList);
-
         for(int i = 0 ; i < messageList.size(); i++){
             taChatMain.appendText("["+ messageList.get(i).getSend_id() +"] "  +messageList.get(i).getContents() +" :: " +  messageList.get(i).getTime()+"\n");
+           /* if(ChatController.mid.equals(messageList.get(i).getSend_id())){ // 내가 보낸 메세지일 경우
+                Text myText = new Text("["+ messageList.get(i).getSend_id() +"] "  +messageList.get(i).getContents() +" :: " +  messageList.get(i).getTime()+"\n");
+                myText.setStyle("-fx-text-fill: #A3CCA2");
+                taChatMain.appendText(myText.getText());
+            } else {
+                Text yourText = new Text("["+ messageList.get(i).getSend_id() +"] "  +messageList.get(i).getContents() +" :: " +  messageList.get(i).getTime()+"\n");
+                yourText.setStyle("-fx-text-fill: #2e508d");
+                taChatMain.appendText(yourText.getText());
+            }*/
         }
-    }
-    private void previousMessageEmpty(Data data) throws IOException{
+    }  // 접속시 이전채팅 있을 시 보여줌
+    private void previousMessageEmpty(Data data) throws IOException{ // 접속시 이전채팅 없을 시
         System.out.println("메세지 없음");
         return;
     }

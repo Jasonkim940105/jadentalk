@@ -30,7 +30,9 @@ public class Server extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("server");
+            stage.setResizable(false);
             stage.show();
+
 
         } catch (Exception e){
             System.out.println(e.getMessage());

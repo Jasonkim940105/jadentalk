@@ -23,6 +23,7 @@ public class ChatStart extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("채팅창");
+            stage.setResizable(false);
             stage.show();
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
@@ -34,6 +35,7 @@ public class ChatStart extends Application {
                     }
                 }
             });
+
 
         } catch (Exception e){
             e.printStackTrace();

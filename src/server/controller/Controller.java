@@ -1,5 +1,6 @@
 package server.controller;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import server.ServerThread;
@@ -16,6 +17,7 @@ public class Controller  {
     private Socket socket = null;
     private ArrayList<ServerThread> clientList = new ArrayList<ServerThread>();
     private HashMap<String, ObjectOutputStream> clientMap = new HashMap<String, ObjectOutputStream>();
+    private boolean isStop = false;
 
     Task task = new Task() {
         @Override
@@ -33,8 +35,14 @@ public class Controller  {
     @FXML
     public void btnServerStop(){
         try {
-            socket.close();
-            serverSocket.close();
+            if(socket != null){
+                socket.close();
+            }
+            if(serverSocket != null){
+                serverSocket.close();
+            }
+            isStop = true;
+            Platform.exit();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +51,7 @@ public class Controller  {
     private void serverStart(){
         try{
             serverSocket = new ServerSocket(11111);
-            while (true){
+            while (!isStop){
                 System.out.println("Server Start");
                 socket = serverSocket.accept();
                 String ipAddr = socket.getInetAddress().getHostAddress();

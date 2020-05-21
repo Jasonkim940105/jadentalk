@@ -13,7 +13,6 @@ public final class Protocol {
     public final static int ID_USINGNOW = 202; // 중복아이디가 있을 경우
     public final static int ID_UNUSING = 203; // 중복아이디가 없을 경우
 
-
     public final static int ADD_ID = 300; // 친구추가
     public final static int FRIEND_ID_NOT_EXIST = 301; //친구추가한 아이디가 없는경우
     public final static int FRIEND_REQUEST_SUCCESS = 302; //친구요청이 성공정으로 날라간 경우
@@ -22,7 +21,6 @@ public final class Protocol {
     public final static int FRIED_REQUEST_ACCEPT_OK = 305; //친구요청 수락 성공
     public final static int FRIED_REQUEST_ACCEPT_NO = 306; //친구요청 수락 거절
     public final static int FRIEND_REQUEST_FAIL = 309; //친구요청 실패
-
 
     public final static int FRIEND_REQUEST_TO_ME = 400; // 나에게 들어온 친구요청
     public final static int FRIEND_REQUEST_LIST_SHOW = 401; // 나에게 들어온 친구요청을 전부 보여줌
@@ -36,7 +34,6 @@ public final class Protocol {
     public final static int PREVIOUS_MESSAGE_EXIST = 502; // 이전 메세지 있음
     public final static int PRRVIOUS_MESSAGE_EMPTY = 503; // 이전 메세지 없음
     public final static int MESSAGE_RECEIVE_REALTIME = 504; // 즉시 메세지 읽어오기
-
 
     public final static int MY_STATE_CHAGE = 800; // 내 상태메세지 변경
     public final static int MY_STATE_CHAGE_OK = 801; // 상태메세지 변경완료
